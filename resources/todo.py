@@ -1,11 +1,12 @@
 from flask import Blueprint, request, jsonify
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.todoModel import todoModel
 
 todo = Blueprint('todo', __name__, url_prefix="/todos")
 
-
 # GET REQUEST
+
+
 @todo.get("/")
 def get_todos():
     try:
@@ -22,11 +23,13 @@ def get_todos():
 
 
 @todo.post("/")
+@jwt_required()
 def create_todo():
+    user_id = get_jwt_identity()
     _todo = request.json["_todo"]
     _duration = request.json["_duration"]
 
-    todo = todoModel(todo=_todo, duration=_duration)
+    todo = todoModel(todo=_todo, duration=_duration, user_id=user_id)
 
     todo.save_to_db()
 

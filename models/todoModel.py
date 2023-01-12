@@ -7,16 +7,19 @@ class todoModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     todo = db.Column(db.String(255), nullable=False, unique=True)
     duration = db.Column(db.String(255), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user_model.id"))
 
-    def __init__(self, todo, duration):
+    def __init__(self, todo, duration, user_id):
         self.todo = todo
         self.duration = duration
+        self.user_id = user_id
 
     def serialize(self):
         return {
             'id': self.id,
             'todo': self.todo,
-            'duration': self.duration
+            'duration': self.duration,
+            'user_id': self.user_id
         }
 
     def save_to_db(self):
